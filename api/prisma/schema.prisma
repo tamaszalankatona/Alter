@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id String @id @default(uuid())
+  username String @db.VarChar(255) @unique
+  password String @db.VarChar(255)
+  email String @db.VarChar(255) @unique
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  last_login DateTime @default(now())
+  profile_picture_url String?
+  personas Persona[]
+}
+
+model Persona {
+    id String @id @default(uuid())
+    user_id String @unique
+    username String @db.VarChar(255)
+    bio String @db.VarChar(255)
+    profile_picture_url String?
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+    posts Post[]
+    user User @relation(fields: [user_id], references: [id])
+    followers Follow[] @relation("FollowerRelation") // Personas who follows this persona
+    following Follow[] @relation("FollowingRelation") // Personas this persona follows
+}
+
+model Post {
+    id String @id @default(uuid())
+    persona_id String @unique
+    description String
+    image_url String?
+    visibility VISIBILITY_OPTIONS @default(PUBLIC)
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+    persona Persona? @relation(fields: [persona_id], references: [id])
+}
+
+model Follow {
+    follower_id  String   // refers to the Persona who follows
+    following_id String   // refers to the Persona being followed
+    created_at DateTime @default(now())
+
+    follower Persona @relation("FollowingRelation", fields: [follower_id], references: [id])
+    following Persona @relation("FollowerRelation", fields: [following_id], references: [id])
+
+    @@id(name: "followId", [follower_id, following_id])
+}
+
+enum VISIBILITY_OPTIONS {
+  PUBLIC
+  FOLLOWERS
+  PRIVATE
+}
