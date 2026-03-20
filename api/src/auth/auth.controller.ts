@@ -65,9 +65,9 @@ export class AuthController {
 
     res.cookie('access_token', token, {
       httpOnly: true,
-      secure: true,
-      sameSite: 'lax',
-      maxAge: 1000 * 60 * 60 * 24 * 7,
+      secure: false, //localhost only
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+      sameSite: 'strict',
     });
 
     return { message: 'Sign in successfull' };
