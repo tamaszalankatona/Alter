@@ -83,6 +83,7 @@ export class UsersService {
         email: updateUserDto.email,
         username: updateUserDto.username,
         password: updateUserDto.password,
+        profile_picture_url: updateUserDto.profile_picture_url,
       },
     });
   }
