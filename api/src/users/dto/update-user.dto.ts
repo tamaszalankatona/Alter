@@ -27,4 +27,12 @@ export class UpdateUserDto {
   @IsOptional()
   @IsString()
   email?: string;
+
+  @ApiPropertyOptional({
+    example: 'images/users/8f3a2c1e-7b4d-4c9a-9f12-3d6e5a1b2c9f/avatar.jpg',
+    description: 'User profile picture url',
+  })
+  @IsOptional()
+  @IsString()
+  profile_picture_url?: string;
 }
